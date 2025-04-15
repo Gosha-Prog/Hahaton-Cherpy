@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from PIL import Image
 import shutil
 from typing import List, Dict, Set, Optional, Union
+from PyPDF2 import PdfReader
 
 
 class CompleteWebsiteScraper:
@@ -55,6 +56,43 @@ class CompleteWebsiteScraper:
         """Проверяет, принадлежит ли URL тому же домену, что и root_url"""
         parsed = urlparse(url)
         return bool(parsed.netloc) and parsed.netloc == urlparse(self.root_url).netloc
+
+    # Добавить импорт PyPDF2 в начале файла
+
+
+    # Обновить метод extract_from_pdf в классе CompleteWebsiteScraper
+    def extract_from_pdf(self, pdf_url: str) -> Dict[str, Optional[str]]:
+        """
+        Извлекает текст из PDF файла
+
+        Args:
+            pdf_url: URL PDF файла
+
+        Returns:
+            Словарь с текстом и путем к локальному файлу
+        """
+        try:
+            response = self.session.get(pdf_url, stream=True)
+            if int(response.headers.get('content-length', 0)) > self.max_file_size:
+                return {'text': None, 'local_path': None}
+
+            local_path = self.download_file(pdf_url, 'pdf') if self.download_documents else None
+
+            text = ''
+            with BytesIO(response.content) as pdf_file:
+                reader = PdfReader(pdf_file)
+                for page in reader.pages:
+                    page_text = page.extract_text()
+                    if page_text:
+                        text += page_text + '\n'
+
+            return {
+                'text': self.clean_text(text),
+                'local_path': local_path
+            }
+        except Exception as e:
+            print(f"Ошибка обработки PDF {pdf_url}: {str(e)}")
+            return {'text': None, 'local_path': None}
 
     def download_file(self, url: str, file_type: str) -> Optional[str]:
         """
@@ -259,33 +297,6 @@ class CompleteWebsiteScraper:
 
         except Exception as e:
             print(f"Ошибка при обработке {url}: {str(e)}")
-
-    def extract_from_pdf(self, pdf_url: str) -> Dict[str, Optional[str]]:
-        """
-        Извлекает текст из PDF файла
-
-        Args:
-            pdf_url: URL PDF файла
-
-        Returns:
-            Словарь с текстом и путем к локальному файлу
-        """
-        try:
-            response = self.session.get(pdf_url, stream=True)
-            if int(response.headers.get('content-length', 0)) > self.max_file_size:
-                return {'text': None, 'local_path': None}
-
-            local_path = self.download_file(pdf_url, 'pdf') if self.download_documents else None
-
-            with BytesIO(response.content) as pdf_file:
-                text = pdf_extract_text(pdf_file)
-                return {
-                    'text': self.clean_text(text),
-                    'local_path': local_path
-                }
-        except Exception as e:
-            print(f"Ошибка обработки PDF {pdf_url}: {str(e)}")
-            return {'text': None, 'local_path': None}
 
     def run(self) -> List[Dict]:
         """Запускает парсинг сайта"""

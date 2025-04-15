@@ -4,7 +4,7 @@ from tqdm import tqdm
 import os
 from typing import List, Tuple
 from parses import start
-from secret import BASE_URL, QUESTION_TEST
+from secret import BASE_URL, QUESTION_TEST, URL_TEST
 
 # Инициализация клиента OpenAI с параметрами из конфигурации
 client = OpenAI(
@@ -125,14 +125,14 @@ def save_answers(answers: List[Tuple[str, str]], filename: str = "answers.txt"):
             f.write("-" * 80 + "\n\n")
 
 
-def main():
+def main(i):
     """Основная функция выполнения скрипта"""
     try:
         # Чтение вопросов из конфигурации
         questions = QUESTION_TEST
 
         # URL для обработки (можно сделать ввод через аргументы командной строки)
-        target_url = input("Введите URL сайта для анализа: ").strip()
+        target_url = str(i)
 
         # Запуск парсера и сохранение результатов
         print("\n" + "=" * 50)
@@ -170,6 +170,6 @@ def main():
 
 
 if __name__ == "__main__":
-    for i in range(6):
-        main()
+    for i in URL_TEST:
+        main(i)
         os.system('cls')

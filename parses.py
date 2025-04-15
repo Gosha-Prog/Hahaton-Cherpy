@@ -135,6 +135,9 @@ class CompleteWebsiteScraper:
             return "OCR отключен"
 
         try:
+            # Путь до tesseract
+            pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
             # Загрузка изображения
             response = self.session.get(img_url, stream=True, timeout=60)
             response.raise_for_status()

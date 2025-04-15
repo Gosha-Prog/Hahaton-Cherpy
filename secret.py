@@ -1,8 +1,4 @@
-API_KEY=""
 BASE_URL="https://llm.drakesoft.ru/api/v1"
-URL_TEST=[
-    "https://teacher.hkiro.ru/"
-]
 QUESTION_TEST= [
     "Кто организатор мероприятия или проекта?",
     "Когда и где пройдёт мероприятие?",

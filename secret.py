@@ -1,4 +1,5 @@
 BASE_URL="https://llm.drakesoft.ru/api/v1"
+URL_TEST = []
 QUESTION_TEST= [
     "Кто организатор мероприятия или проекта?",
     "Когда и где пройдёт мероприятие?",

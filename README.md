@@ -38,7 +38,7 @@ pip install -r requirements.txt
 🔐 Конфигурация
 Создайте файл secret.py в корне проекта:
 API_KEY = "sk-1eBuYLztp8xhrMO1OkFXhA" # Доступный ключ
-BASE_URL = "https://https://teacher.hkiro.ru//openai"
+BASE_URL = "https://teacher.hkiro.ru//openai"
 MODEL_NAME = "gpt-4o-mini"  # или любая другая доступная модель
 
 🚀 Запуск
